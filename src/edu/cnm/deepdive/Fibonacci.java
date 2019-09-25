@@ -1,29 +1,52 @@
 package edu.cnm.deepdive;
 
 import java.math.BigInteger;
+import java.util.Iterator;
 
-public class Fibonacci {
+public class Fibonacci implements Iterable<BigInteger> {
 
   public static void main(String[] args) {
-    System.out.println(fibonacci(8
-    ));
+    for (BigInteger i : new Fibonacci(100)) {
+      System.out.println(i);
+    }
   }
 
-  
+  private final int length;
 
-  public static BigInteger fibonacci(int n){
+  public Fibonacci(int length) {
+    this.length = length;
+  }
 
-    BigInteger t;
+  @Override
+  public Iterator<BigInteger> iterator() {
+    return new FibIterator(length);
+  }
 
-    if (n<=0){
-    t = BigInteger.ZERO;
-    } else if(n == 1){
-      t= BigInteger.ONE;
-    } else {
-      t = fibonacci(n-1).add(fibonacci(n-2));
+  private static class FibIterator implements Iterator<BigInteger> {
+
+    private final int length;
+    private int generated;
+    private BigInteger prev = BigInteger.valueOf(-1);
+    private BigInteger curr = BigInteger.ONE;
+
+    public FibIterator(int length) {
+      this.length = length;
     }
 
-    return t;
+    @Override
+    public boolean hasNext() {
+      return generated < length;
+    }
+
+    @Override
+    public BigInteger next() {
+      generated++;
+      BigInteger next = prev.add(curr);
+      prev = curr;
+      curr = next;
+      return curr;
+    }
+
   }
 
 }
